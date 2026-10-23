@@ -31,7 +31,6 @@ data class TourTooltip(val title: String, val description: String)
 val tourTooltips = mapOf(
     2 to TourTooltip("Uso de Cámara", "Captura una foto de tu planta para realizar un análisis de salud en tiempo real."),
     3 to TourTooltip("Uso de Galería", "También puedes seleccionar una foto de tu galería para analizarla."),
-    4 to TourTooltip("Imágenes de Prueba", "Usa estas imágenes predefinidas para probar la herramienta de diagnóstico de forma rápida."),
     5 to TourTooltip("Pantalla Inicio", "Volver al inicio para realizar un nuevo análisis."),
     6 to TourTooltip("Pantalla Historial", "Aquí se guardan automáticamente todos tus diagnósticos."),
     7 to TourTooltip("Lista de Resultados", "Tus diagnósticos recientes. Tócalos para ver los detalles y consejos."),

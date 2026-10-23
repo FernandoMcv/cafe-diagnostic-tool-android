@@ -20,7 +20,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
@@ -31,7 +31,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -95,7 +94,6 @@ fun CafeDetectionScreen(
 
     var isCreatingPost by remember { mutableStateOf(false) }
     var showAuthRequiredDialog by remember { mutableStateOf(false) }
-    var showDemoGallery by remember { mutableStateOf(false) }
     var showHelpDialog by remember { mutableStateOf(false) }
     
     // Estado para la imagen seleccionada de la galería pendiente de confirmación
@@ -151,16 +149,6 @@ fun CafeDetectionScreen(
         return
     }
 
-    if (showDemoGallery) {
-        DemoGalleryScreen(
-            onDismiss = { showDemoGallery = false },
-            onImageSelected = { resId ->
-                showDemoGallery = false
-                viewModel.loadDemoImage(context, resId)
-            }
-        )
-        return
-    }
 
     if (isCreatingPost && uiState.predictionResult != null) {
         PostCreationScreen(
@@ -218,7 +206,6 @@ fun CafeDetectionScreen(
                     SelectionArea(
                         onCameraClick = { permissionLauncher.launch(Manifest.permission.CAMERA) },
                         onGalleryClick = { galleryLauncher.launch("image/*") },
-                        onDemoClick = { showDemoGallery = true },
                         onShowHelp = { showHelpDialog = true }
                     )
                 } else {
@@ -376,7 +363,7 @@ fun CafeDetectionScreen(
 }
 
 @Composable
-fun SelectionArea(onCameraClick: () -> Unit, onGalleryClick: () -> Unit, onDemoClick: () -> Unit, onShowHelp: () -> Unit) {
+fun SelectionArea(onCameraClick: () -> Unit, onGalleryClick: () -> Unit, onShowHelp: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
@@ -458,20 +445,7 @@ fun SelectionArea(onCameraClick: () -> Unit, onGalleryClick: () -> Unit, onDemoC
             Text("Abrir Fotos", fontWeight = FontWeight.Bold, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedButton(
-            onClick = onDemoClick,
-            modifier = Modifier.fillMaxWidth(0.85f).height(50.dp).tourTarget(4),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = Color.DarkGray,
-                containerColor = Color.White
-            ),
-            border = BorderStroke(1.dp, Color.LightGray)
-        ) {
-            Text("Imágenes Demo", fontWeight = FontWeight.Bold, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
-        }
 
         Spacer(modifier = Modifier.height(32.dp))
         
@@ -754,61 +728,4 @@ fun ResultCard(prediction: PredictionResult) {
     }
 }
 
-@Composable
-fun DemoGalleryScreen(
-    onDismiss: () -> Unit,
-    onImageSelected: (Int) -> Unit
-) {
-    androidx.activity.compose.BackHandler(onBack = onDismiss)
-    
-    val demoImages = listOf(
-        com.fcbc.tesis.R.drawable.demo_b_8,
-        com.fcbc.tesis.R.drawable.demo_ca_38,
-        com.fcbc.tesis.R.drawable.demo_fe_26,
-        com.fcbc.tesis.R.drawable.demo_fe_46,
-        com.fcbc.tesis.R.drawable.demo_mn_59,
-        com.fcbc.tesis.R.drawable.demo_n_42
-    )
 
-    Scaffold(
-        topBar = {
-            @OptIn(ExperimentalMaterial3Api::class)
-            TopAppBar(
-                title = { Text("Imágenes de Prueba", fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = onDismiss) {
-                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "Atrás")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White,
-                    titleContentColor = Color.Black,
-                    navigationIconContentColor = Color.Black
-                )
-            )
-        },
-        containerColor = com.fcbc.tesis.ui.theme.CreamBackground
-    ) { paddingValues ->
-        androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
-            columns = androidx.compose.foundation.lazy.grid.GridCells.Fixed(2),
-            horizontalArrangement = Arrangement.spacedBy(24.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp),
-            contentPadding = PaddingValues(16.dp),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            items(demoImages) { resId ->
-                Image(
-                    painter = androidx.compose.ui.res.painterResource(id = resId),
-                    contentDescription = null,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .aspectRatio(1f)
-                        .clip(RoundedCornerShape(16.dp))
-                        .clickable { onImageSelected(resId) }
-                )
-            }
-        }
-    }
-}

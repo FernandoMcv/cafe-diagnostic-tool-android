@@ -21,14 +21,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.HelpOutline
-import androidx.compose.material.icons.filled.ZoomIn
-import androidx.compose.material.icons.filled.ZoomOut
-import androidx.camera.core.Camera
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -64,10 +60,6 @@ fun CameraScreen(
     var imageCapture by remember { mutableStateOf<ImageCapture?>(null) }
     var isCapturing by remember { mutableStateOf(false) }
     var showHelpDialog by remember { mutableStateOf(false) } // Estado para el Pop-up de ayuda
-    
-    // Variables para controlar el zoom de la cámara
-    var camera by remember { mutableStateOf<Camera?>(null) }
-    var zoomLinearValue by remember { mutableStateOf(0f) }
 
     DisposableEffect(lifecycleOwner) {
         onDispose {
@@ -98,15 +90,12 @@ fun CameraScreen(
 
                     try {
                         cameraProvider.unbindAll()
-                        val boundCamera = cameraProvider.bindToLifecycle(
+                        cameraProvider.bindToLifecycle(
                             lifecycleOwner,
                             cameraSelector,
                             preview,
                             imageCapture
                         )
-                        camera = boundCamera
-                        // Restablecemos el zoom inicial
-                        boundCamera.cameraControl.setLinearZoom(zoomLinearValue)
                     } catch (exc: Exception) {
                         Log.e("CameraScreen", "Use case binding failed", exc)
                     }
@@ -219,69 +208,7 @@ fun CameraScreen(
                 }
             }
         }
-        
-        // Barra de control de Zoom en el lateral derecho
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(end = 16.dp)
-                .align(Alignment.CenterEnd)
-        ) {
-            Column(
-                modifier = Modifier
-                    .background(Color.Black.copy(alpha = 0.5f), RoundedCornerShape(20.dp))
-                    .padding(vertical = 12.dp, horizontal = 8.dp)
-                    .width(48.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Zoom In Button (+)
-                IconButton(
-                    onClick = {
-                        zoomLinearValue = (zoomLinearValue + 0.15f).coerceAtMost(1f)
-                        camera?.cameraControl?.setLinearZoom(zoomLinearValue)
-                    },
-                    modifier = Modifier
-                        .size(36.dp)
-                        .background(Color.White.copy(alpha = 0.15f), CircleShape)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ZoomIn,
-                        contentDescription = "Acercar",
-                        tint = Color.White,
-                        modifier = Modifier.size(22.dp)
-                    )
-                }
 
-                // Indicador de zoom actual (ej. 1.0x, 2.5x, etc.)
-                val zoomMultiplier = 1f + (zoomLinearValue * 4f)
-                val zoomText = String.format(java.util.Locale.US, "%.1fx", zoomMultiplier)
-                Text(
-                    text = zoomText,
-                    color = Color.White,
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                // Zoom Out Button (-)
-                IconButton(
-                    onClick = {
-                        zoomLinearValue = (zoomLinearValue - 0.15f).coerceAtLeast(0f)
-                        camera?.cameraControl?.setLinearZoom(zoomLinearValue)
-                    },
-                    modifier = Modifier
-                        .size(36.dp)
-                        .background(Color.White.copy(alpha = 0.15f), CircleShape)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ZoomOut,
-                        contentDescription = "Alejar",
-                        tint = Color.White,
-                        modifier = Modifier.size(22.dp)
-                    )
-                }
-            }
-        }
 
         // Pop-up Modal de Ayuda (Instrucciones Paso 1 y Paso 2)
         if (showHelpDialog) {

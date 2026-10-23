@@ -155,24 +155,6 @@ class HomeViewModel(
         )
     }
 
-    fun loadDemoImage(context: Context, resId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                // Prevenimos OOM cargando una versión escalada de la imagen (inSampleSize = 4 reduce la RAM 16x)
-                val options = android.graphics.BitmapFactory.Options().apply {
-                    inSampleSize = 4
-                }
-                val bitmap = android.graphics.BitmapFactory.decodeResource(context.resources, resId, options)
-                if (bitmap != null) {
-                    withContext(Dispatchers.Main) {
-                        setBitmap(bitmap)
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
 
     /**
      * Limpieza al destruir el ViewModel (usuario cierra la app o navega permanentemente).

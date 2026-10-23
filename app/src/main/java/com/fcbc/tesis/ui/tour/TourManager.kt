@@ -21,9 +21,13 @@ object TourManager {
 
     fun start() { currentStep.value = 1 }
     fun next() { 
-        if (currentStep.value < MAX_STEP) currentStep.value++ else skip()
+        val nextStep = if (currentStep.value == 3) 5 else currentStep.value + 1
+        if (nextStep <= MAX_STEP) currentStep.value = nextStep else skip()
     }
-    fun previous() { currentStep.value = maxOf(1, currentStep.value - 1) }
+    fun previous() { 
+        val prevStep = if (currentStep.value == 5) 3 else currentStep.value - 1
+        currentStep.value = maxOf(1, prevStep) 
+    }
     fun skip() { currentStep.value = 0 }
 }
 

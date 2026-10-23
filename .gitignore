@@ -1,15 +1,39 @@
 *.iml
 .gradle
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
+local.properties
+
+# Android Studio / IntelliJ IDEA
+.idea/
+*.iws
+*.ipr
+out/
+
+# VS Code & Cursor
+.vscode/
+
+# Gradle & Kotlin caches
+.gradle_home/
+.kotlin/
+build/
 /build
-/captures
+app/build/
+captures/
 .externalNativeBuild
 .cxx
-local.properties
+
+# Logs & diagnostics
+*.log
+ksp_error.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Firebase configuration (contains project credentials)
+app/google-services.json
+
+# Local research assets & raw temporary dumps
+Fotos_Agrupadas/
+CV_Analisis/
+nueva_visual/

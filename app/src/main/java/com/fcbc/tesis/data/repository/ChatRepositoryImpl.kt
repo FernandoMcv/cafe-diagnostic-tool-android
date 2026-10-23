@@ -208,12 +208,29 @@ class ChatRepositoryImpl(
                 .decodeList<ChatMessageDto>()
 
             remoteMessages.forEach { dto ->
+                // Parsear la fecha ISO-8601 real del servidor para conservar el orden cronológico
+                // exacto de los mensajes incluso después de reinstalar la app.
+                val parsedTimestamp = try {
+                    java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", java.util.Locale.US)
+                        .apply { timeZone = java.util.TimeZone.getTimeZone("UTC") }
+                        .parse(dto.created_at)?.time ?: System.currentTimeMillis()
+                } catch (parseEx: Exception) {
+                    // Fallback: si el formato del servidor cambia, usamos hora local como respaldo seguro
+                    try {
+                        java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", java.util.Locale.US)
+                            .apply { timeZone = java.util.TimeZone.getTimeZone("UTC") }
+                            .parse(dto.created_at)?.time ?: System.currentTimeMillis()
+                    } catch (_: Exception) {
+                        System.currentTimeMillis()
+                    }
+                }
+
                 val entity = com.fcbc.tesis.data.local.entity.ChatMessageEntity(
                     id = dto.id,
                     roomId = dto.room_id,
                     senderId = dto.sender_id,
                     content = dto.content,
-                    timestamp = System.currentTimeMillis(), // We could parse dto.created_at but it's fine for demo
+                    timestamp = parsedTimestamp,
                     isSent = true
                 )
                 chatDao.insertMessage(entity)
