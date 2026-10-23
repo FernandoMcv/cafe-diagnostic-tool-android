@@ -37,3 +37,11 @@ app/google-services.json
 Fotos_Agrupadas/
 CV_Analisis/
 nueva_visual/
+
+# Private academic thesis drafts & local agent configurations (Do NOT upload to GitHub)
+AGENTS.md
+Documentacion_Tesis_Completa.md
+audit/
+docs/
+support/
+CHANGELOG.md
