@@ -53,17 +53,18 @@ Local Data Source         Remote Data Source
 
 ## Stack
 
-| Category | Technology |
-|:---|:---|
-| **Language** | Kotlin 1.9+ |
-| **UI Toolkit** | Jetpack Compose |
-| **Architecture** | Clean Architecture (MVVM) |
-| **Edge AI** | PyTorch Mobile Lite (`pytorch_android_lite:2.1.0`) |
-| **Local Database** | Room Database |
-| **Cloud Database** | Supabase (PostgreSQL) |
-| **Concurrency** | Kotlin Coroutines, Flow / StateFlow |
-| **Dependency Injection** | Koin |
-| **Background Tasks** | WorkManager |
+| Category | Technology | Description |
+|:---|:---|:---|
+| **Language** | Kotlin 1.9+ | 100% Modern Kotlin with Coroutines & StateFlow |
+| **UI Toolkit** | Jetpack Compose | Declarative UI with Material 3 & Edge-to-Edge support |
+| **Architecture** | Clean Architecture (MVVM) | Decoupled Domain, Data, and Presentation layers |
+| **Edge AI** | PyTorch Mobile Lite (`2.1.0`) | On-device inference with quantized `.ptl` Vision models |
+| **Local DB (SQL)** | Room (SQLite) | Asynchronous DAOs, offline caching & sync flags (`isSynced`) |
+| **Cloud DB (SQL)** | Supabase (PostgreSQL) | Cloud storage secured with Row Level Security (RLS) policies |
+| **Camera & Hardware** | CameraX & Crop API | Viewfinder lifecycle handling, aspect ratio & tensor pre-processing |
+| **Dependency Injection** | Koin | Lightweight, idiomatic dependency injection |
+| **Background Sync** | WorkManager | Guaranteed sync workers with network constraint triggers |
+| **Serialization** | Kotlinx Serialization | Type-safe JSON serialization for DTOs and network payloads |
 
 ---
 
